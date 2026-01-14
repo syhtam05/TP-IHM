@@ -20,22 +20,18 @@ public class TestBulleInfo extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout(FlowLayout.CENTER, 20, 50));
 
-        // Création des 3 labels
         JLabel label1 = new JLabel("Label 1");
         JLabel label2 = new JLabel("Label 2");
         JLabel label3 = new JLabel("Label 3");
 
-        // Ajout des bordures pour mieux les voir (optionnel)
         label1.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         label2.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         label3.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        // AJOUT DES BULLES D'AIDE (ToolTips)
         label1.setToolTipText("Ceci est l'aide pour le premier label");
         label2.setToolTipText("Vous survolez le deuxième label");
         label3.setToolTipText("Info-bulle du troisième label");
 
-        // Ajout à la fenêtre
         add(label1);
         add(label2);
         add(label3);

@@ -27,7 +27,6 @@ public class BoutonBox extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // --- PARTIE HAUTE (Cases à cocher homogènes) ---
         // GridLayout(1, 2) assure que chaque cellule occupe 50% de la largeur
         JPanel panelHaut = new JPanel(new GridLayout(1, 2));
         JCheckBox cbGaucher = new JCheckBox("gaucher", false);
@@ -41,17 +40,14 @@ public class BoutonBox extends JFrame {
         panelHaut.add(cbDroitier);
         add(panelHaut, BorderLayout.NORTH);
 
-        // --- PARTIE CENTRALE (Combo et Liste) ---
         JPanel panelCentral = new JPanel();
         panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
         panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
 
-        // JComboBox
         String[] niveaux = {"École maternelle", "École élémentaire", "Collège", "Lycée", "Enseignement Supérieur"};
         JComboBox<String> comboNiveaux = new JComboBox<>(niveaux);
         comboNiveaux.setMaximumSize(new Dimension(300, 30));
 
-        // JList (avec scroll car la liste peut être longue)
         String[] matieres = {"Mathématiques", "Français", "Anglais", "Physique-Chimie", "SVT", "EPS"};
         JList<String> listeMatieres = new JList<>(matieres);
         listeMatieres.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -66,9 +62,7 @@ public class BoutonBox extends JFrame {
         
         add(panelCentral, BorderLayout.CENTER);
 
-        // --- PARTIE BASSE (Boutons aux extrémités) ---
         JPanel panelBas = new JPanel(new BorderLayout());
-        // Ajout d'une marge de 5 pixels tout autour du panel
         panelBas.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
         JButton btnAnnuler = new JButton("Annuler");

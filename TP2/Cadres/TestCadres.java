@@ -35,11 +35,9 @@ public class TestCadres extends JFrame {
         Border bleu = BorderFactory.createLineBorder(Color.BLUE, 1);
         Border rouge = BorderFactory.createLineBorder(Color.RED, 1);
         Border espace = BorderFactory.createEmptyBorder(2, 2, 2, 2);
-        // On combine : Bleu + (Espace + Rouge)
         Border comboInterieur = BorderFactory.createCompoundBorder(espace, rouge);
         label5.setBorder(BorderFactory.createCompoundBorder(bleu, comboInterieur));
 
-        // Ajout au JFrame
         add(label1);
         add(label2);
         add(label3);

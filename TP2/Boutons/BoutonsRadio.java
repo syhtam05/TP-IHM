@@ -13,7 +13,6 @@ public class BoutonsRadio extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // --- PARTIE HAUTE (Labels) ---
         JPanel panelHaut = new JPanel(new GridLayout(1, 2));
         JLabel lblGauche = new JLabel("gauche", SwingConstants.LEFT);
         JLabel lblDroite = new JLabel("droite", SwingConstants.RIGHT);
@@ -21,8 +20,6 @@ public class BoutonsRadio extends JFrame {
         panelHaut.add(lblDroite);
         add(panelHaut, BorderLayout.NORTH);
 
-        // --- PARTIE CENTRALE (Boutons Radio avec Cadre) ---
-        // On utilise un Box vertical pour empiler les boutons l'un sous l'autre
         JPanel panelCentral = new JPanel();
         Box boxCouleurs = Box.createVerticalBox();
         
@@ -30,7 +27,6 @@ public class BoutonsRadio extends JFrame {
         JRadioButton rbRouge = new JRadioButton("rouge");
         JRadioButton rbNoir = new JRadioButton("noir");
 
-        // Groupe pour l'exclusivité des boutons radio
         ButtonGroup groupeCouleurs = new ButtonGroup();
         groupeCouleurs.add(rbBleu);
         groupeCouleurs.add(rbRouge);
@@ -40,7 +36,6 @@ public class BoutonsRadio extends JFrame {
         boxCouleurs.add(rbRouge);
         boxCouleurs.add(rbNoir);
 
-        // Création du cadre noir avec titre
         TitledBorder cadre = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK), "Couleur");
         panelCentral.setBorder(cadre);
@@ -48,7 +43,6 @@ public class BoutonsRadio extends JFrame {
         
         add(panelCentral, BorderLayout.CENTER);
 
-        // --- PARTIE BASSE (Boutons d'action) ---
         JPanel panelBas = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         panelBas.add(new JButton("RAZ"));
         panelBas.add(new JButton("quitter"));
