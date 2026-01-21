@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="TP1"/>
 	<classpathentry kind="src" path="TP2"/>
+	<classpathentry kind="src" path="TP3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
