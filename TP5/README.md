@@ -1,0 +1,1 @@
+# Internationalisation et Externalisation des ressources
