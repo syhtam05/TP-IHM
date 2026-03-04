@@ -1,115 +1,131 @@
 package edu.mermet.tp5.fenetres;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import edu.mermet.tp5.Application;
 
-/**
- *
- * @author brunomermet
- */
 public class FenetreConversion extends AbstractFenetreInterne {
-    private JTextField champCelsius;
-    private JTextField champFarenheit;
+    private JTextField champCelsius, champFarenheit;
     private JButton boutonConvertir;
     private Action actionConvertir;
-    private boolean celsiusAFocus;
+    private boolean celsiusAFocus = true;
+
     public FenetreConversion(Application appli, Action action) {
         super(appli, action, "Conversion celsius/Farenheit");
         setTitle("Conversion Celsius/Farenheit");
-        this.setSize(new Dimension(100,50));
-        this.setLayout(new GridLayout(3,1));
-        JPanel ligneCelsius = new JPanel();
-        ligneCelsius.setLayout(new FlowLayout(FlowLayout.TRAILING));
-        JLabel labCelsius = new JLabel("Celsius :");
+        this.setLayout(new GridLayout(3, 1));
+
+        // 1. Aide par Bulles d'aide (Tooltips)
+        // -----------------------------------
         champCelsius = new JTextField(15);
-        labCelsius.setLabelFor(champCelsius);
-        ligneCelsius.add(labCelsius);
-        ligneCelsius.add(champCelsius);
-        this.add(ligneCelsius);
-        celsiusAFocus = true;
-        champCelsius.addFocusListener(new EcouteurFocus(true));
-        JPanel ligneFarenheit = new JPanel();
-        ligneFarenheit.setLayout(new FlowLayout(FlowLayout.TRAILING));
-        JLabel labFarenheit = new JLabel("Farenheit :");
+        champCelsius.setToolTipText("Entrez une température en degrés Celsius (ex: 25)");
+        
         champFarenheit = new JTextField(15);
-        labFarenheit.setLabelFor(champFarenheit);
-        ligneFarenheit.add(labFarenheit);
+        champFarenheit.setToolTipText("Entrez une température en degrés Farenheit (ex: 77)");
+
+        // 2. Aide par Icône "?"
+        // ---------------------
+        // Panel Celsius
+        JPanel ligneCelsius = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+        ligneCelsius.add(new JLabel("Celsius :"));
+        ligneCelsius.add(champCelsius);
+        ligneCelsius.add(creerBoutonAide("Entrez une valeur numérique en Celsius pour la convertir."));
+        this.add(ligneCelsius);
+
+        // Panel Farenheit
+        JPanel ligneFarenheit = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+        ligneFarenheit.add(new JLabel("Farenheit :"));
         ligneFarenheit.add(champFarenheit);
+        ligneFarenheit.add(creerBoutonAide("Entrez une valeur numérique en Farenheit pour la convertir."));
         this.add(ligneFarenheit);
-        champFarenheit.addFocusListener(new EcouteurFocus(false));
-        JPanel ligneValider = new JPanel();
-        ligneValider.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        // 3. Aide par Menu Contextuel (Clic droit)
+        // ----------------------------------------
+        JPopupMenu menuContextuel = new JPopupMenu();
+        JMenuItem itemAide = new JMenuItem("Aide");
+        itemAide.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, 
+                "Aide à la conversion :\n" +
+                "- Saisissez un nombre dans l'un des champs.\n" +
+                "- Cliquez sur 'Convertir' ou appuyez sur Entrée.\n" +
+                "- L'unité source est celle du dernier champ sélectionné.",
+                "Aide Contextuelle", JOptionPane.INFORMATION_MESSAGE);
+        });
+        menuContextuel.add(itemAide);
+
+        // Ajouter le menu contextuel aux deux champs
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mousePressed(MouseEvent e) { if (e.isPopupTrigger()) doPop(e); }
+            public void mouseReleased(MouseEvent e) { if (e.isPopupTrigger()) doPop(e); }
+            private void doPop(MouseEvent e) { menuContextuel.show(e.getComponent(), e.getX(), e.getY()); }
+        };
+        champCelsius.addMouseListener(mouseListener);
+        champFarenheit.addMouseListener(mouseListener);
+
+        // Fin de l'interface
+        JPanel ligneValider = new JPanel(new FlowLayout(FlowLayout.CENTER));
         actionConvertir = new ActionConvertir();
         boutonConvertir = new JButton(actionConvertir);
         ligneValider.add(boutonConvertir);
         this.add(ligneValider);
+
+        champCelsius.addFocusListener(new EcouteurFocus(true));
+        champFarenheit.addFocusListener(new EcouteurFocus(false));
+        
         pack();
         getRootPane().setDefaultButton(boutonConvertir);
     }
 
+    /**
+     * Crée un petit bouton d'aide discret avec une icône "?"
+     */
+    private JLabel creerBoutonAide(String message) {
+        JLabel aide = new JLabel();
+        
+        // On essaie de charger l'icône, sinon on met du texte
+        java.net.URL imgURL = getClass().getResource("/icons/help_small.png");
+        if (imgURL != null) {
+            aide.setIcon(new ImageIcon(imgURL));
+        } else {
+            aide.setText(" [?] ");
+            aide.setForeground(Color.BLUE); // Pour qu'il ressemble à un lien
+        }
+        
+        aide.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        aide.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JOptionPane.showMessageDialog(FenetreConversion.this, 
+                    message, "Aide Contextuelle", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        return aide;
+    }
+
+    // --- Classes internes existantes (ActionConvertir, EcouteurFocus) gardées ---
     private class EcouteurFocus implements FocusListener {
         private boolean aStocker;
-
-        public EcouteurFocus(boolean b) {
-            aStocker = b;
-        }
-
-        @Override
-        public void focusGained(FocusEvent fe) {
-            celsiusAFocus = aStocker;
-        }
-
-        @Override
-        public void focusLost(FocusEvent fe) {
-            return;
-        }
+        public EcouteurFocus(boolean b) { aStocker = b; }
+        @Override public void focusGained(FocusEvent fe) { celsiusAFocus = aStocker; }
+        @Override public void focusLost(FocusEvent fe) {}
     }
 
     private class ActionConvertir extends AbstractAction {
-
-        public ActionConvertir() {
-            super("Convertir");
-        }
-
+        public ActionConvertir() { super("Convertir"); }
         @Override
         public void actionPerformed(ActionEvent ae) {
-            double tempCelsius = 0;
-            double tempFarenheit = 0;
-            if (celsiusAFocus) {
-                try {
-                    tempCelsius = Double.parseDouble(champCelsius.getText());
-                tempFarenheit = 9./5*tempCelsius+32;
-                champFarenheit.setText(""+tempFarenheit);
+            try {
+                if (celsiusAFocus) {
+                    double c = Double.parseDouble(champCelsius.getText());
+                    champFarenheit.setText("" + (9./5*c + 32));
+                } else {
+                    double f = Double.parseDouble(champFarenheit.getText());
+                    champCelsius.setText("" + ((f - 32) * 5./9));
                 }
-                catch (NumberFormatException nfe) {
-                    champFarenheit.setText("Erreur de format");
-                }
-                }
-            else {
-                try {
-                    tempFarenheit = Double.parseDouble(champFarenheit.getText());
-                    tempCelsius = (tempFarenheit - 32) *5./9;
-                    champCelsius.setText(""+tempCelsius);
-                }
-                catch (NumberFormatException nfe) {
-                    champCelsius.setText("Erreur de format");
-                }
-                
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(FenetreConversion.this, "Veuillez saisir un nombre valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-
 }
