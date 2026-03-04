@@ -23,8 +23,9 @@ public class ActionQuitter extends AbstractAction {
 	    putValue(Action.MNEMONIC_KEY,KeyEvent.VK_Q);
 	}
 
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-    System.exit(0);
-    }
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+	    application.incrementerCompetence(1); // Niveau 1
+	    System.exit(0);
+	}
 }

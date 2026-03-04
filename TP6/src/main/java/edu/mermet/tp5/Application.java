@@ -26,7 +26,7 @@ public class Application extends JFrame {
     
     private Properties preferences;
     private String utilisateur;
-    private int competenceUtilisateur = 4; // Niveau par défaut
+    private double competenceUtilisateur = 1.0; // Niveau par défaut
 
     public Application(String user) {
         // Gestion de l'utilisateur (paramètre main ou login système)
@@ -37,12 +37,17 @@ public class Application extends JFrame {
         chargerPreferences();
         
         setTitle("Multi-Window - Utilisateur : " + utilisateur);
-        init();
+        init(); // Initialise menus et fenêtres
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 450);
         this.setLocationRelativeTo(null);
-        setVisible(true);
+        
+        // On affiche l'application
+        this.setVisible(true); 
+
+        // On affiche l'astuce
+        new FenetreSuggestion(this, preferences).setVisible(true);
     }
 
     private void init() {
@@ -123,6 +128,8 @@ public class Application extends JFrame {
         } catch (IOException e) {
             System.err.println("Aucun fichier de préférences trouvé pour " + utilisateur);
         }
+        String compStr = preferences.getProperty("competence", "1.0");
+        competenceUtilisateur = Double.parseDouble(compStr);
     }
 
     public void enregistrerPreferences() {
@@ -156,8 +163,29 @@ public class Application extends JFrame {
         String pref = preferences.getProperty(nomProp, "Auto");
         if (pref.equals("Toujours")) return true;
         if (pref.equals("Jamais")) return false;
-        // Mode "Auto" : dépend du niveau de compétence
-        return niveauRequis <= competenceUtilisateur;
+        
+        // Mode "Auto" : On compare avec la partie entière de la compétence
+        return niveauRequis <= (int) competenceUtilisateur;
+    }
+    
+    public void incrementerCompetence(int niveauFonction) {
+        double limite = 4.0 * niveauFonction;
+        
+        if (competenceUtilisateur < limite) {
+            competenceUtilisateur += (double) niveauFonction / 10.0;
+            
+            // On arrondit pour éviter les erreurs de précision binaire (0.1 + 0.2 = 0.300000004)
+            competenceUtilisateur = Math.round(competenceUtilisateur * 10.0) / 10.0;
+            
+            // On sauvegarde le nouveau niveau dans les préférences
+            preferences.setProperty("competence", String.valueOf(competenceUtilisateur));
+            enregistrerPreferences();
+            
+            // On met à jour l'interface (certains menus "Auto" pourraient apparaître)
+            appliquerCompetence();
+            
+            System.out.println("Nouvelle compétence : " + competenceUtilisateur);
+        }
     }
 
     // --- Méthodes de contrôle des fenêtres ---
